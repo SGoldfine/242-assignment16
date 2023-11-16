@@ -1,117 +1,140 @@
-/*Structure*/
-
 :root {
-    --background: white;
-    --mainbackground: red;
-    --text: red;
-    --border: black;
+    --primary: #E94F37;
 }
+
+
+/* Structure */
 
 body {
-    background-color: var(--mainbackground);
+    font-family: 'Times New Roman', Times, serif;
+    background-color: #F6F7EB;
 }
 
-main {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-section {
-    margin: 25px;
-    padding: 20px 10px;
-    background: var(--background);
-    border-radius: 10px;
-    border: 3px solid var(--border);
-    text-align: center;
-}
-
-h1 {
-    margin: 25px;
-    padding: 10px 5px;
-    background: var(--background);
-    border-radius: 10px;
-    border: 3px solid var(--border);
-    text-align: center;
-}
-
-section {
-    transition: transform 0.3s, z-index 0s, box-shadow 0.3s;
-    z-index: 1;
-}
-
-section:hover {
-    transform: scale(1.009);
-    z-index: 10;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-}
-
-button {
-   height: 50px;
-   width: 100px;
-}
-
-.thing-details ul {
-    list-style-type: none; 
-    padding-left: 0; 
-}
-
-.thing-details li {
-    margin: 10px;
-}
-
-form label {
-    display: block;
-    margin-bottom: 10px;
-    color: black;
-}
-
-form input[type="text"],
-form textarea {
-    width: 100%;
+.thing {
     padding: 10px;
-    margin-bottom: 15px;
+    margin: 10px;
+    background: #F6F7EB;
+    border-radius: 5px;
+    border: 7px solid var(--primary);
 }
+
+.thing img {
+    max-width: 90%;
+    display: block;
+    margin: auto;
+}
+
+#thing-details-column {
+    padding: 10px;
+    margin: 10px;
+    background: #F6F7EB;
+    border-radius: 5px;
+    border: 7px solid var(--primary);
+}
+
+#add-link {
+    font-size: 2em;
+    border: 1px solid maroon;
+}
+
+#edit-link {
+    float: right;
+    margin-right: 10px;
+}
+
+#delete-link {
+    float: right;
+}
+
+#add-edit-thing-container {
+    padding: 10px;
+    margin: 10px;
+    background: #F6F7EB;
+    border-radius: 5px;
+    border: 7px solid var(--primary);
+}
+
+
+/* Form */
+
+label {
+    display: block;
+}
+
+.inline {
+    display: inline;
+}
+
+#things-p input {
+    margin-top: 5px;
+}
+
+#add-thing {
+    color: #E94F37;
+    font-size: 0.75em;
+    text-align: right;
+}
+
+
+/* The Close Button */
+
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    padding: 0px 5px;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
 
 /* Typography */
 
-body {
-    font-family: Arial, Helvetica, sans-serif;
+#main-nav-items {
+    font-size: 1.2em;
+}
+
+a {
+    text-decoration: none;
 }
 
 h1,
-h2 {
-    color: black;
-    text-align: center;
-}
-
-h1 {
-    text-align: left;
-}
-
-p,
-li {
-    text-align: left;
+h2,
+a {
+    color: #393E41;
 }
 
 .hidden {
     display: none;
 }
 
-/*Larger Resolutions*/
+.transparent {
+    opacity: 0;
+}
 
-@media only screen and (min-width: 900px) {
 
-    @media (max-width: 768px) {
-        .thing-list section {
-            width: calc(50% - 20px);
-        }
+/* Larger Resolutions */
+
+@media (min-width: 600px) {
+    .columns {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
     }
-    
-    @media (max-width: 480px) {
-        .thing-list section {
-            width: 100%;
-        }
+   
+    .thing {
+        flex: 25%;
+        flex-grow: 0;
+    }
+
+    #add-edit-recipe-container {
+        max-width: 30%;
+        margin: auto;
     }
 }

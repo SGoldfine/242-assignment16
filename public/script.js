@@ -1,218 +1,216 @@
-document.addEventListener('DOMContentLoaded', () => {
-  loadThings();
-  document.getElementById('add-thing-button').addEventListener('click', toggleAddThingForm);
-  document.getElementById('thing-form').addEventListener('submit', handleFormSubmit);
-});
-
-async function loadThings() {
+const getThings = async() => {
   try {
-      const response = await fetch('/api/things');
-      const things = await response.json();
-      displayThings(things);
+      return (await fetch("api/things/")).json();
   } catch (error) {
-      console.error('Error loading things:', error);
+      console.log(error);
   }
+};
+
+const showThings = async() => {
+  let things = await getThings();
+  let thingsDiv = document.getElementById("thing-list");
+  thingsDiv.innerHTML = "";
+  things.forEach((thing) => {
+      const section = document.createElement("section");
+      section.classList.add("thing");
+      thingsDiv.append(section);
+
+      const a = document.createElement("a");
+      a.href = "#";
+      section.append(a);
+
+      const h3 = document.createElement("h3");
+      h3.innerHTML = thing.name;
+      a.append(h3);
+
+      const img = document.createElement("img");
+      img.src = thing.img;
+      section.append(img);
+
+      a.onclick = (e) => {
+          e.preventDefault();
+          displayDetails(thing);
+      };
+  });
+};
+
+const displayDetails = (thing) => {
+  const thingDetails = document.getElementById("thing-details");
+  thingDetails.innerHTML = "";
+
+  const h3 = document.createElement("h3");
+  h3.innerHTML = thing.name;
+  thingDetails.append(h3);
+
+  const dLink = document.createElement("a");
+  dLink.innerHTML = "	&#x2715;";
+  thingDetails.append(dLink);
+  dLink.id = "delete-link";
+
+  const eLink = document.createElement("a");
+  eLink.innerHTML = "&#9998;";
+  thingDetails.append(eLink);
+  eLink.id = "edit-link";
+
+  const inventor = document.createElement("p");
+  thingDetails.append(inventor);
+  inventor.innerHTML = thing.inventor;
+
+  const date = document.createElement("p");
+  thingDetails.append(date);
+  date.innerHTML = thing.inventionDate;
+
+  const desc = document.createElement("p");
+  thingDetails.append(desc);
+  desc.innerHTML = thing.description;
+
+  const ul = document.createElement("ul");
+  thingDetails.append(ul);
+  console.log(thing.funFacts);
+  thing.funFacts.forEach((fact) => {
+      const li = document.createElement("li");
+      ul.append(li);
+      li.innerHTML = fact;
+  });
+
+  eLink.onclick = (e) => {
+      e.preventDefault();
+      document.querySelector(".dialog").classList.remove("transparent");
+      document.getElementById("add-edit-title").innerHTML = "Edit Thing";
+  };
+
+  dLink.onclick = (e) => {
+      e.preventDefault();
+      deleteThing(thing);
+  };
+
+  populateEditForm(thing);
+};
+
+const deleteThing = async(thing) => {
+  let response = await fetch(`/api/things/${thing._id}`, {
+      method: "DELETE",
+      headers: {
+          "Content-Type": "application/json"
+      }
+  });
+
+  if (response.status != 200) {
+      console.log("error deleting");
+      return;
+  }
+
+  let result = await response.json();
+  showThings();
+  document.getElementById("thing-details").innerHTML = "";
+  resetForm();
 }
 
-function displayThings(things) {
-  const thingList = document.getElementById('thing-list');
-  thingList.innerHTML = '';
-  things.forEach(thing => {
-      const thingElement = document.createElement('section');
-      thingElement.classList.add('thing');
-      let factsList = thing.funFacts.join(', ');
-      thingElement.innerHTML = `
-          <h3>${thing.name}</h3>
-          <p>${thing.inventor}</p>
-          <p>${thing.inventionDate}</p>
-          <p>${thing.description}</p>
-          <p>${factsList}</p>
-      `;
-      thingList.appendChild(thingElement);
+const populateEditForm = (thing) => {
+  const form = document.getElementById("add-edit-thing-form");
+  form._id.value = thing._id;
+  form.name.value = thing.name;
+  form.inventor.value = thing.inventor;
+  form.inventionDate.value = thing.inventionDate;
+  form.description.value = thing.description;
+  populateFact(thing)
+};
+
+const populateFact = (thing) => {
+  const section = document.getElementById("facts-boxes");
+
+  thing.funFacts.forEach((fact) => {
+      const input = document.createElement("input");
+      input.type = "text";
+      input.value = fact;
+      section.append(input);
   });
 }
 
-function toggleAddThingForm() {
-  const formContainer = document.getElementById('thing-form-container');
-  formContainer.classList.toggle('hidden');
+const addEditThing = async(e) => {
+  e.preventDefault();
+  const form = document.getElementById("add-edit-thing-form");
+  const formData = new FormData(form);
+  let response;
+  formData.append("funFacts", getFacts());
+
+  //trying to add a new thing
+  if (form._id.value == -1) {
+      formData.delete("_id");
+
+      response = await fetch("/api/things", {
+          method: "POST",
+          body: formData
+      });
+  }
+  //edit an existing thing
+  else {
+
+      console.log(...formData);
+
+      response = await fetch(`/api/things/${form._id.value}`, {
+          method: "PUT",
+          body: formData
+      });
+  }
+
+  //successfully got data from server
+  if (response.status != 200) {
+      console.log("Error posting data");
+  }
+
+  thing = await response.json();
+
+  if (form._id.value != -1) {
+      displayDetails(thing);
+  }
+
+  resetForm();
+  document.querySelector(".dialog").classList.add("transparent");
+  showThings();
+};
+
+const getFacts = () => {
+  const inputs = document.querySelectorAll("#facts-boxes input");
+  let funFacts = [];
+
+  inputs.forEach((input) => {
+    funFacts.push(input.value);
+  });
+
+  return funFacts;
 }
 
-async function handleFormSubmit(event) {
-  event.preventDefault();
-  const formData = new FormData(event.target);
-  const funFacts = formData.get('funFacts').split(',').map(fact => fact.trim());
+const resetForm = () => {
+  const form = document.getElementById("add-edit-thing-form");
+  form.reset();
+  form._id = "-1";
+  document.getElementById("facts-boxes").innerHTML = "";
+};
 
-  const newThing = {
-      name: formData.get('name'),
-      inventor: formData.get('inventor'),
-      inventionDate: formData.get('inventionDate'),
-      description: formData.get('description'),
-      funFacts: funFacts,
+const showHideAdd = (e) => {
+  e.preventDefault();
+  document.querySelector(".dialog").classList.remove("transparent");
+  document.getElementById("add-edit-title").innerHTML = "Add Thing";
+  resetForm();
+};
+
+const addFact = (e) => {
+  e.preventDefault();
+  const section = document.getElementById("facts-boxes");
+  const input = document.createElement("input");
+  input.type = "text";
+  section.append(input);
+}
+
+window.onload = () => {
+  showThings();
+  document.getElementById("add-edit-thing-form").onsubmit = addEditThing;
+  document.getElementById("add-link").onclick = showHideAdd;
+
+  document.querySelector(".close").onclick = () => {
+      document.querySelector(".dialog").classList.add("transparent");
   };
 
-  try {
-      const response = await fetch('/api/things', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(newThing)
-      });
-
-      if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      displayThings(result);
-      toggleAddThingForm();
-      event.target.reset();
-  } catch (error) {
-      console.error('Error submitting form:', error);
-  }
-}
-
-
-
-
-// const showThings = async () => {
-//     let things = await getThings();
-//     let thingsDiv = document.getElementById("things-div");
-//     thingsDiv.innerHTML = "";
-//     things.forEach((thing) => {
-//       const section = document.createElement("section");
-//       thingsDiv.append(section);
-  
-//       const h2 = document.createElement("h2");
-//       h2.innerHTML = thing.name;
-//       section.append(h2);
-      
-//       const inventor = document.createElement("p");
-//       inventor.innerHTML = thing.inventor;
-//       section.append(inventor);
-  
-//       const date = document.createElement("p");
-//       date.innerHTML = thing.inventionDate;
-//       section.append(date);
-  
-//       const desc = document.createElement("p");
-//       desc.innerHTML = thing.description;
-//       section.append(desc);
-  
-//       let details = document.createElement("div");
-//       details.classList.add("things-details");
-//       section.append(details);
-      
-//       const funFacts = document.createElement("ul");
-//       thing.funFacts.forEach(facts => {
-//         const fact = document.createElement("li");
-//         fact.textContent = facts;
-//         funFacts.appendChild(fact);
-//       });
-//       section.append(funFacts);
-      
-//       const img = document.createElement("img");
-//       img.src = thing.img;
-//       section.append(img);
-//     });
-//   }
-  
-//   const getThings = async () => {
-//     try {
-//       const response = await fetch("api/things");
-//         if(!response.ok) {
-//           throw new Error('Error');
-//         }
-//         return await response.json();
-//     } catch(error) {
-//         console.log("error retrieving json");
-//         return "";
-//     }
-//   }
-
-//   const showAddThing = () => {
-//     document.getElementById("modern").classList.toggle("hidden");
-//     document.getElementById("newthing").classList.toggle("hidden");
-//   }
-
-//   const printThing = () => {  
-//     const newthing = document.getElementById("new");
-
-//     const name = document.getElementById("txt-name").value;
-  
-//     const inventor = document.getElementById("txt-inventor").value;
-  
-//     const date = document.getElementById("txt-date").value;
-      
-//     const description = document.getElementById("txt-description").value;
-
-//     const facts = document.getElementById("txt-facts").value;
-  
-//     newthing.innerHTML += `<section class = "section"><h2>${name}</h2> <p>${inventor}</p> <p>${date}</p> <p>${description}</p> <ul><li>${facts}</li></section>`;
-  
-//     document.getElementById("new").classList.toggle("hidden");
-//   }
-
-//   const addThing = async(e) => {
-//     e.preventDefault();
-//     const form = document.getElementById("add-thing-form");
-//     const formData = new FormData(form);
-//     let response;
-//     //trying to add a new recipe
-//     if (form._id.value == -1) {
-//         formData.delete("_id");
-//         formData.delete("name");
-//         formData.append("facts", getAllThings());
-
-//         console.log(...formData);
-
-//         response = await fetch("/api/things", {
-//             method: "POST",
-//             body: formData
-//         });
-//     }
-
-//     //successfully got data from server
-//     if (response.status != 200) {
-//         console.log("Error posting data");
-//     }
-
-//     response = await response.json();
-//     resetForm();
-//     document.querySelector(".dialog").classList.add("transparent");
-//     showRecipes();
-// };
-
-// const getAllThings = () => {
-//   const inputs = document.querySelectorAll("#fact-boxes input");
-//   let facts = [];
-
-//   inputs.forEach((input) => {
-//       facts.push(input.value);
-//   });
-
-//   return facts;
-// }
-
-// const resetForm = () => {
-//   const form = document.getElementById("add-thing-form");
-//   form.reset();
-//   form._id = "-1";
-//   document.getElementById("thing-boxes").innerHTML = "";
-// };
-
-// const addFact = (e) => {
-//   e.preventDefault();
-//   const section = document.getElementById("fact-boxes");
-//   const input = document.createElement("input");
-//   input.type = "text";
-//   section.append(input);
-// }
-
-  
-// window.onload = () => {
-//   document.getElementById("add-thing").onclick = showAddThing;
-//   document.getElementById("button-add").onclick = printThing;
-//   document.getElementById("add-thing").onclick = addThing;
-//   showThings();
-// }
+  document.getElementById("add-facts").onclick = addFact;
+};
