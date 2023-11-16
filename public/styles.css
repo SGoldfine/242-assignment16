@@ -1,0 +1,117 @@
+/*Structure*/
+
+:root {
+    --background: white;
+    --mainbackground: red;
+    --text: red;
+    --border: black;
+}
+
+body {
+    background-color: var(--mainbackground);
+}
+
+main {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+section {
+    margin: 25px;
+    padding: 20px 10px;
+    background: var(--background);
+    border-radius: 10px;
+    border: 3px solid var(--border);
+    text-align: center;
+}
+
+h1 {
+    margin: 25px;
+    padding: 10px 5px;
+    background: var(--background);
+    border-radius: 10px;
+    border: 3px solid var(--border);
+    text-align: center;
+}
+
+section {
+    transition: transform 0.3s, z-index 0s, box-shadow 0.3s;
+    z-index: 1;
+}
+
+section:hover {
+    transform: scale(1.009);
+    z-index: 10;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+button {
+   height: 50px;
+   width: 100px;
+}
+
+.thing-details ul {
+    list-style-type: none; 
+    padding-left: 0; 
+}
+
+.thing-details li {
+    margin: 10px;
+}
+
+form label {
+    display: block;
+    margin-bottom: 10px;
+    color: black;
+}
+
+form input[type="text"],
+form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+/* Typography */
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1,
+h2 {
+    color: black;
+    text-align: center;
+}
+
+h1 {
+    text-align: left;
+}
+
+p,
+li {
+    text-align: left;
+}
+
+.hidden {
+    display: none;
+}
+
+/*Larger Resolutions*/
+
+@media only screen and (min-width: 900px) {
+
+    @media (max-width: 768px) {
+        .thing-list section {
+            width: calc(50% - 20px);
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .thing-list section {
+            width: 100%;
+        }
+    }
+}

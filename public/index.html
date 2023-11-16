@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Random Things</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <h1>Things that have nothing to do with each other</h1>
+        <button id="add-thing-button">Add Thing</button>
+    </header>
+
+    <main>
+        <section id="thing-list" class="thing-list"></section>
+
+        <div id="thing-form-container" class="hidden">
+            <form id="thing-form" enctype="multipart/form-data">
+                <input type="hidden" name="_id" value="-1">
+                
+                <label for="title">Name:</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="inventor">Inventor:</label>
+                <input type="text" id="inventor" name="inventor" required>
+
+                <label for="inventionDate">Invention Date:</label>
+                <input type="text" id="inventionDate" name="inventionDate" required>
+
+                <label for="description">Description:</label>
+                <input type="text" id="description" name="description">
+
+                <label for="funFacts">Fun Facts (separated by commas):</label>
+                <input type="text" id="funFacts" name="funFacts">
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="styles.css">
+        <script src="script.js"></script>
+    </head>
+    <body>
+        <h1>Things That Have Nothing to do With Each Other</h1>
+        <div id="things-div"></div>
+        <div id="button">
+            <button id="add-thing">Add Thing</button>
+        </div>
+        <h1 id="modern" class="hidden">Add Thing</h1>
+        <div id="newthing" class="hidden">
+            <div class="dialog transparent">
+                <h2>Add Thing</h2>
+                <form id="add-thing-form" method="post">
+                    <p class="columns">
+                        <label for="txt-name">Name:</label>
+                        <input type="text" id="txt-name" required>
+                    </p>
+                    <p class="columns">
+                        <label for="txt-inventor">Inventor:</label>
+                        <input type="text" id="txt-inventor">
+                    </p>
+                    <p class="columns">
+                        <label for="txt-date">Invention Date:</label>
+                        <input type="text" id="txt-date">
+                    </p>
+                    <p class="columns">
+                        <label for="txt-description">Description:</label>
+                        <input type="text" id="txt-description" required>     
+                    </p>
+                    <p id="facts-p">
+                        <label class="inline">Fun Facts:</label>
+                        <a href="#" id="add-fact">Add Fun Fact</a>
+                        <section id="fact-boxes"></section>
+                    </p>
+                    <button id="button-add">Add Thing</button>
+                </form>
+            </div>
+        </div>
+        <div class="hidden" id="new"></div>
+    </body>
+</html> -->
