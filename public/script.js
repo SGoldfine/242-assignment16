@@ -43,12 +43,12 @@ const displayDetails = (thing) => {
   thingDetails.append(h3);
 
   const dLink = document.createElement("a");
-  dLink.innerHTML = "	&#x2715;";
+  dLink.innerHTML = "Delete";
   thingDetails.append(dLink);
   dLink.id = "delete-link";
 
   const eLink = document.createElement("a");
-  eLink.innerHTML = "&#9998;";
+  eLink.innerHTML = "Edit";
   thingDetails.append(eLink);
   eLink.id = "edit-link";
 
@@ -134,7 +134,6 @@ const addEditThing = async(e) => {
   let response;
   formData.append("funFacts", getFacts());
 
-  //trying to add a new thing
   if (form._id.value == -1) {
       formData.delete("_id");
 
@@ -142,10 +141,7 @@ const addEditThing = async(e) => {
           method: "POST",
           body: formData
       });
-  }
-  //edit an existing thing
-  else {
-
+  } else {
       console.log(...formData);
 
       response = await fetch(`/api/things/${form._id.value}`, {
